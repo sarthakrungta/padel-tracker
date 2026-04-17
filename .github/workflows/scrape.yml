@@ -1,0 +1,61 @@
+name: Scrape Padel Availability
+
+on:
+  # Run every 2 hours during Melbourne business hours (UTC+10/+11 DST)
+  # Melbourne AEST = UTC+10, AEDT = UTC+11
+  # 06:00 UTC = 16:00-17:00 AEST — covers the afternoon peak
+  # Runs: 00,02,04,06,08,10,12,14,16,18,20,22 UTC
+  schedule:
+    - cron: "0 */2 * * *"
+
+  # Also allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      days_ahead:
+        description: "How many days ahead to scrape"
+        required: false
+        default: "7"
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to commit data back to the repo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Run scraper
+        run: python scraper/scrape.py
+        env:
+          # Override days_ahead if manually triggered
+          DAYS_AHEAD: ${{ github.event.inputs.days_ahead || '7' }}
+
+      - name: Run analysis
+        run: python analysis/analyse.py
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stage new / updated data files
+          git add data/raw/ analysis/dashboard_data.json analysis/*.csv
+
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+            git commit -m "data: scrape snapshot ${TIMESTAMP}"
+            git push
+          fi

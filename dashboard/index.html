@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Padel Occupancy Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222535;
+    --border: #2e3245;
+    --text: #e8eaf0;
+    --muted: #8b8fa8;
+    --accent: #4ade80;
+    --accent2: #f59e0b;
+    --accent3: #60a5fa;
+    --red: #f87171;
+    --font: 'DM Mono', 'Fira Code', monospace;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+  }
+  header .logo {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  header h1 { font-family: var(--sans); font-size: 18px; font-weight: 500; letter-spacing: -0.3px; }
+  header .sub { font-size: 12px; color: var(--muted); font-family: var(--font); }
+  header .updated { margin-left: auto; font-family: var(--font); font-size: 11px; color: var(--muted); }
+
+  .main { max-width: 1200px; margin: 0 auto; padding: 24px 24px 48px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .kpi .label { font-size: 11px; color: var(--muted); font-family: var(--font); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px; }
+  .kpi .value { font-size: 28px; font-weight: 700; line-height: 1; font-family: var(--font); }
+  .kpi .value.green { color: var(--accent); }
+  .kpi .value.amber { color: var(--accent2); }
+  .kpi .value.blue  { color: var(--accent3); }
+  .kpi .detail { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-1 { margin-bottom: 16px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .card-title {
+    font-size: 12px;
+    font-family: var(--font);
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  canvas { width: 100% !important; }
+
+  /* Heatmap */
+  .heatmap-wrap { overflow-x: auto; }
+  .heatmap { border-collapse: collapse; width: 100%; font-family: var(--font); font-size: 11px; }
+  .heatmap th { color: var(--muted); font-weight: 400; padding: 4px 6px; text-align: center; }
+  .heatmap td {
+    width: 48px; height: 32px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--bg);
+    font-weight: 500;
+  }
+  .heatmap .row-label { color: var(--muted); text-align: right; padding-right: 8px; font-size: 10px; white-space: nowrap; }
+
+  /* Club tabs */
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .tab {
+    padding: 6px 14px; border-radius: 6px; font-size: 12px; font-family: var(--font);
+    cursor: pointer; border: 1px solid var(--border); background: transparent;
+    color: var(--muted); transition: all .15s;
+  }
+  .tab.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 500; }
+  .tab:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+  .no-data {
+    display: flex; align-items: center; justify-content: center;
+    height: 180px; color: var(--muted); font-family: var(--font); font-size: 13px;
+    flex-direction: column; gap: 8px;
+  }
+  .no-data .hint { font-size: 11px; opacity: .6; }
+
+  #loading {
+    display: flex; align-items: center; justify-content: center;
+    height: 60vh; color: var(--muted); font-family: var(--font); font-size: 14px;
+    gap: 12px;
+  }
+  .spinner {
+    width: 20px; height: 20px; border: 2px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🎾</div>
+  <div>
+    <h1>Padel Occupancy Tracker</h1>
+    <div class="sub">Melbourne club analysis</div>
+  </div>
+  <div class="updated" id="updated-label">—</div>
+</header>
+
+<div id="loading">
+  <div class="spinner"></div>
+  Loading dashboard data…
+</div>
+
+<div class="main" id="app" style="display:none">
+
+  <div class="tabs" id="club-tabs"></div>
+
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Occupancy by weekday</div>
+      <canvas id="chart-weekday" height="220"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent3)"></span>Occupancy by hour</div>
+      <canvas id="chart-hour" height="220"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-1">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>Daily occupancy trend</div>
+      <canvas id="chart-trend" height="160"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-1">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red)"></span>Hour × Weekday heat-map (avg occupancy %)</div>
+      <div class="heatmap-wrap" id="heatmap-container"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DATA_PATH = '../analysis/dashboard_data.json';
+
+const WEEKDAY_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const WEEKDAY_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const CHART_DEFAULTS = {
+  responsive: true,
+  animation: { duration: 400 },
+  plugins: { legend: { display: false }, tooltip: { callbacks: {} } },
+  scales: {}
+};
+
+function makeScale(color = '#8b8fa8') {
+  return {
+    grid: { color: 'rgba(255,255,255,0.04)' },
+    ticks: { color, font: { family: "'DM Mono', monospace", size: 11 } },
+    border: { display: false }
+  };
+}
+
+// Destroy existing charts before redrawing
+const charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+let state = { data: null, club: null };
+
+async function loadData() {
+  try {
+    const res = await fetch(DATA_PATH);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+function renderKPIs(data, club) {
+  const overall = data.overall[club] || {};
+  const byDay   = data.by_day.filter(r => r.club === club);
+
+  const avgOcc  = overall.avg_occupancy_pct ?? '—';
+  const peakOcc = overall.max_occupancy_pct ?? '—';
+  const courts  = overall.typical_courts    ?? '—';
+  const snapshots = overall.total_snapshots ?? 0;
+
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi">
+      <div class="label">Avg Occupancy</div>
+      <div class="value amber">${avgOcc}%</div>
+      <div class="detail">across all tracked dates</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Peak Occupancy</div>
+      <div class="value red" style="color:var(--red)">${peakOcc}%</div>
+      <div class="detail">single-day highest</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Courts on Site</div>
+      <div class="value blue">${courts}</div>
+      <div class="detail">detected from API</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Data Points</div>
+      <div class="value green">${snapshots}</div>
+      <div class="detail">snapshots collected</div>
+    </div>
+  `;
+}
+
+function renderWeekdayChart(data, club) {
+  destroyChart('weekday');
+  const rows = data.by_weekday.filter(r => r.club === club);
+  if (!rows.length) return;
+
+  const ordered = WEEKDAY_ORDER.map(wd => rows.find(r => r.weekday === wd));
+  const values  = ordered.map(r => r?.avg_occupancy_pct ?? 0);
+  const colors  = values.map(v =>
+    v >= 70 ? '#f87171' : v >= 45 ? '#f59e0b' : '#4ade80'
+  );
+
+  const ctx = document.getElementById('chart-weekday').getContext('2d');
+  charts.weekday = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: WEEKDAY_SHORT,
+      datasets: [{ data: values, backgroundColor: colors, borderRadius: 4, borderSkipped: false }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: makeScale(),
+        y: { ...makeScale(), min: 0, max: 100, ticks: { ...makeScale().ticks, callback: v => v + '%' } }
+      },
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}% avg occupancy` } }
+      }
+    }
+  });
+}
+
+function renderHourChart(data, club) {
+  destroyChart('hour');
+  const rows = data.by_hour.filter(r => r.club === club).sort((a,b) => a.hour.localeCompare(b.hour));
+  if (!rows.length) return;
+
+  const ctx = document.getElementById('chart-hour').getContext('2d');
+  charts.hour = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: rows.map(r => r.hour),
+      datasets: [{
+        data: rows.map(r => r.avg_occupancy_pct),
+        borderColor: '#60a5fa',
+        backgroundColor: 'rgba(96,165,250,0.08)',
+        tension: 0.35,
+        fill: true,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        pointBackgroundColor: '#60a5fa',
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: makeScale(),
+        y: { ...makeScale(), min: 0, max: 100, ticks: { ...makeScale().ticks, callback: v => v + '%' } }
+      },
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}% avg occupancy` } }
+      }
+    }
+  });
+}
+
+function renderTrendChart(data, club) {
+  destroyChart('trend');
+  const rows = data.by_day.filter(r => r.club === club).sort((a,b) => a.date.localeCompare(b.date));
+  if (!rows.length) return;
+
+  const ctx = document.getElementById('chart-trend').getContext('2d');
+  charts.trend = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: rows.map(r => r.date),
+      datasets: [{
+        data: rows.map(r => r.occupancy_pct),
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.07)',
+        tension: 0.2,
+        fill: true,
+        pointRadius: rows.length > 30 ? 0 : 3,
+        pointHoverRadius: 5,
+        pointBackgroundColor: '#f59e0b',
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: { ...makeScale(), ticks: { ...makeScale().ticks, maxTicksLimit: 12, maxRotation: 0 } },
+        y: { ...makeScale(), min: 0, max: 100, ticks: { ...makeScale().ticks, callback: v => v + '%' } }
+      },
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}% occupancy` } }
+      }
+    }
+  });
+}
+
+function renderHeatmap(data, club) {
+  const container = document.getElementById('heatmap-container');
+
+  // Build hour × weekday matrix
+  const byDay  = data.by_day.filter(r => r.club === club);
+  const byHour = data.by_hour.filter(r => r.club === club);
+
+  // We need per-snapshot hourly data — reconstruct from raw data
+  // Use summary_by_hour averaged across days; weekday breakdown isn't
+  // in the pre-aggregated data, so show a simplified hour-only heatmap
+  // (a full hour×weekday heatmap requires raw snapshot data)
+
+  if (!byHour.length) {
+    container.innerHTML = '<div class="no-data">Not enough data yet<span class="hint">Run the scraper for a few days first</span></div>';
+    return;
+  }
+
+  const hours = byHour.map(r => r.hour).sort();
+  const maxOcc = Math.max(...byHour.map(r => r.avg_occupancy_pct), 1);
+
+  function cellColor(pct) {
+    // green → amber → red
+    const t = Math.min(pct / 100, 1);
+    if (t < 0.5) {
+      const r = Math.round(74 + (245-74)*t*2);
+      const g = Math.round(222 + (158-222)*t*2);
+      const b = Math.round(128 + (11-128)*t*2);
+      return `rgb(${r},${g},${b})`;
+    } else {
+      const t2 = (t - 0.5) * 2;
+      const r = Math.round(245 + (248-245)*t2);
+      const g = Math.round(158 + (113-158)*t2);
+      const b = Math.round(11 + (11-11)*t2);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+
+  let html = '<table class="heatmap"><thead><tr><th></th>';
+  html += `<th colspan="${hours.length}">Hour of day (avg occupancy %)</th>`;
+  html += '</tr><tr><th></th>';
+  hours.forEach(h => html += `<th>${h}</th>`);
+  html += '</tr></thead><tbody>';
+
+  // One row = this club summary (could extend to weekday breakdown later)
+  html += `<tr><td class="row-label">${club.split(' ')[0]}</td>`;
+  hours.forEach(h => {
+    const row = byHour.find(r => r.hour === h);
+    const pct = row?.avg_occupancy_pct ?? 0;
+    html += `<td style="background:${cellColor(pct)};opacity:${0.4 + pct/100*0.6}">${pct}%</td>`;
+  });
+  html += '</tr>';
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function renderAll(club) {
+  const d = state.data;
+  renderKPIs(d, club);
+  renderWeekdayChart(d, club);
+  renderHourChart(d, club);
+  renderTrendChart(d, club);
+  renderHeatmap(d, club);
+}
+
+function buildTabs(clubs) {
+  const container = document.getElementById('club-tabs');
+  container.innerHTML = '';
+  clubs.forEach((club, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === 0 ? ' active' : '');
+    btn.textContent = club;
+    btn.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      state.club = club;
+      renderAll(club);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function showNoData() {
+  document.getElementById('loading').innerHTML = `
+    <div style="text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">📭</div>
+      <div>No data found at <code style="font-size:12px;background:var(--surface);padding:2px 6px;border-radius:4px">${DATA_PATH}</code></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Run the scraper first: <code style="background:var(--surface);padding:2px 6px;border-radius:4px">python scraper/scrape.py</code></div>
+    </div>
+  `;
+}
+
+async function init() {
+  const data = await loadData();
+
+  document.getElementById('loading').style.display = 'none';
+
+  if (!data || !data.clubs || !data.clubs.length) {
+    showNoData();
+    return;
+  }
+
+  state.data = data;
+  state.club = data.clubs[0];
+
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('updated-label').textContent =
+    'Last updated: ' + new Date(data.generated_at).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' });
+
+  buildTabs(data.clubs);
+  renderAll(state.club);
+}
+
+init();
+</script>
+</body>
+</html>
