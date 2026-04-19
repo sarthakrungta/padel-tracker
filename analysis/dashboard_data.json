@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-04-19T13:17:37.535912Z",
+  "generated_at": "2026-04-19T14:49:44.671168Z",
   "clubs": [
     "Game4Padel Richmond"
   ],
   "overall": {
     "Game4Padel Richmond": {
-      "total_snapshots": 8,
+      "total_snapshots": 9,
       "date_range": {
         "from": "2026-04-18",
-        "to": "2026-04-25"
+        "to": "2026-04-26"
       },
-      "avg_occupancy_pct": 52.6,
+      "avg_occupancy_pct": 47.7,
       "max_occupancy_pct": 92.3,
       "typical_courts": 5
     }
@@ -46,7 +46,7 @@
       "weekday": "Tuesday",
       "iso_week": 17,
       "year": 2026,
-      "occupancy_pct": 17.1
+      "occupancy_pct": 25.7
     },
     {
       "club": "Game4Padel Richmond",
@@ -79,6 +79,14 @@
       "iso_week": 17,
       "year": 2026,
       "occupancy_pct": 13.8
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "date": "2026-04-26",
+      "weekday": "Sunday",
+      "iso_week": 17,
+      "year": 2026,
+      "occupancy_pct": 0.0
     }
   ],
   "by_weekday": [
@@ -93,7 +101,7 @@
       "club": "Game4Padel Richmond",
       "weekday": "Tuesday",
       "weekday_index": 1,
-      "avg_occupancy_pct": 17.1,
+      "avg_occupancy_pct": 25.7,
       "sample_days": 1
     },
     {
@@ -128,8 +136,8 @@
       "club": "Game4Padel Richmond",
       "weekday": "Sunday",
       "weekday_index": 6,
-      "avg_occupancy_pct": 92.3,
-      "sample_days": 1
+      "avg_occupancy_pct": 46.1,
+      "sample_days": 2
     }
   ],
   "by_week": [
@@ -146,101 +154,101 @@
       "year": 2026,
       "iso_week": 17,
       "week_label": "2026-W17",
-      "avg_occupancy_pct": 40.6,
-      "sample_days": 6
+      "avg_occupancy_pct": 36.1,
+      "sample_days": 7
     }
   ],
   "by_hour": [
     {
       "club": "Game4Padel Richmond",
       "hour": "08:00",
-      "avg_available_courts": 3.67,
-      "avg_occupancy_pct": 28.9,
-      "observations": 6
+      "avg_available_courts": 3.86,
+      "avg_occupancy_pct": 24.8,
+      "observations": 7
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "09:00",
-      "avg_available_courts": 5.67,
-      "avg_occupancy_pct": 23.3,
-      "observations": 6
+      "avg_available_courts": 6,
+      "avg_occupancy_pct": 20.0,
+      "observations": 7
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "10:00",
-      "avg_available_courts": 5.4,
+      "avg_available_courts": 5.67,
+      "avg_occupancy_pct": 20.0,
+      "observations": 6
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "11:00",
+      "avg_available_courts": 5.43,
+      "avg_occupancy_pct": 20.0,
+      "observations": 7
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "12:00",
+      "avg_available_courts": 5.29,
+      "avg_occupancy_pct": 12.9,
+      "observations": 7
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "13:00",
+      "avg_available_courts": 5.67,
+      "avg_occupancy_pct": 13.3,
+      "observations": 6
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "14:00",
+      "avg_available_courts": 4.2,
       "avg_occupancy_pct": 24.0,
       "observations": 5
     },
     {
       "club": "Game4Padel Richmond",
-      "hour": "11:00",
-      "avg_available_courts": 5.33,
-      "avg_occupancy_pct": 23.3,
-      "observations": 6
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "12:00",
-      "avg_available_courts": 5.33,
-      "avg_occupancy_pct": 15.0,
-      "observations": 6
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "13:00",
-      "avg_available_courts": 6,
-      "avg_occupancy_pct": 16.0,
-      "observations": 5
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "14:00",
-      "avg_available_courts": 5,
+      "hour": "15:00",
+      "avg_available_courts": 5.25,
       "avg_occupancy_pct": 10.0,
       "observations": 4
     },
     {
       "club": "Game4Padel Richmond",
-      "hour": "15:00",
-      "avg_available_courts": 5.67,
-      "avg_occupancy_pct": 6.7,
-      "observations": 3
-    },
-    {
-      "club": "Game4Padel Richmond",
       "hour": "16:00",
-      "avg_available_courts": 2.33,
-      "avg_occupancy_pct": 53.3,
+      "avg_available_courts": 3.67,
+      "avg_occupancy_pct": 26.7,
       "observations": 3
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "17:00",
-      "avg_available_courts": 7,
+      "avg_available_courts": 7.5,
       "avg_occupancy_pct": 0.0,
-      "observations": 1
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "18:00",
-      "avg_available_courts": 6,
-      "avg_occupancy_pct": 0.0,
-      "observations": 1
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "19:00",
-      "avg_available_courts": 2.5,
-      "avg_occupancy_pct": 10.0,
       "observations": 2
     },
     {
       "club": "Game4Padel Richmond",
+      "hour": "18:00",
+      "avg_available_courts": 7.5,
+      "avg_occupancy_pct": 0.0,
+      "observations": 2
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "19:00",
+      "avg_available_courts": 3.33,
+      "avg_occupancy_pct": 6.7,
+      "observations": 3
+    },
+    {
+      "club": "Game4Padel Richmond",
       "hour": "20:00",
-      "avg_available_courts": 2,
-      "avg_occupancy_pct": 22.5,
-      "observations": 4
+      "avg_available_courts": 2.6,
+      "avg_occupancy_pct": 18.0,
+      "observations": 5
     },
     {
       "club": "Game4Padel Richmond",
