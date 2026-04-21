@@ -1,11 +1,11 @@
 club,hour,avg_available_courts,avg_occupancy_pct,observations
-Game4Padel Richmond,08:00,3.67,26.7,6
-Game4Padel Richmond,09:00,5.8,0.0,5
-Game4Padel Richmond,10:00,4.75,20.0,4
+Game4Padel Richmond,08:00,3.5,30.0,6
+Game4Padel Richmond,09:00,5.6,4.0,5
+Game4Padel Richmond,10:00,6,0.0,3
 Game4Padel Richmond,11:00,6.33,0.0,3
-Game4Padel Richmond,12:00,4.17,23.3,6
-Game4Padel Richmond,13:00,4.14,28.6,7
-Game4Padel Richmond,14:00,4.57,20.0,7
+Game4Padel Richmond,12:00,3.83,30.0,6
+Game4Padel Richmond,13:00,3.71,34.3,7
+Game4Padel Richmond,14:00,4.29,25.7,7
 Game4Padel Richmond,15:00,4,16.0,5
 Game4Padel Richmond,16:00,3,40.0,3
 Game4Padel Richmond,17:00,4.33,26.7,3
