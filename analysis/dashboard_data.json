@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-25T05:52:33.677912Z",
+  "generated_at": "2026-04-25T07:39:27.665943Z",
   "clubs": [
     "Game4Padel Richmond"
   ],
@@ -287,7 +287,7 @@
     {
       "club": "Game4Padel Richmond",
       "hour": "20:00",
-      "avg_available_courts": 1.2,
+      "avg_available_courts": 1,
       "avg_occupancy_pct": 16.0,
       "observations": 5
     },
