@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-25T22:46:22.133006Z",
+  "generated_at": "2026-04-26T03:40:38.183544Z",
   "clubs": [
     "Game4Padel Richmond"
   ],
@@ -10,7 +10,7 @@
         "from": "2026-04-18",
         "to": "2026-05-02"
       },
-      "avg_occupancy_pct": 47.7,
+      "avg_occupancy_pct": 48.1,
       "max_occupancy_pct": 92.9,
       "typical_courts": 5
     }
@@ -94,7 +94,7 @@
       "weekday": "Monday",
       "iso_week": 18,
       "year": 2026,
-      "occupancy_pct": 0.0
+      "occupancy_pct": 7.1
     },
     {
       "club": "Game4Padel Richmond",
@@ -142,7 +142,7 @@
       "club": "Game4Padel Richmond",
       "weekday": "Monday",
       "weekday_index": 0,
-      "avg_occupancy_pct": 44.3,
+      "avg_occupancy_pct": 47.8,
       "sample_days": 2
     },
     {
@@ -210,7 +210,7 @@
       "year": 2026,
       "iso_week": 18,
       "week_label": "2026-W18",
-      "avg_occupancy_pct": 0.0,
+      "avg_occupancy_pct": 1.2,
       "sample_days": 6
     }
   ],
@@ -218,14 +218,14 @@
     {
       "club": "Game4Padel Richmond",
       "hour": "08:00",
-      "avg_available_courts": 8.67,
+      "avg_available_courts": 8.33,
       "avg_occupancy_pct": 5.5,
       "observations": 6
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "09:00",
-      "avg_available_courts": 9,
+      "avg_available_courts": 8.83,
       "avg_occupancy_pct": 0.0,
       "observations": 6
     },
@@ -239,15 +239,15 @@
     {
       "club": "Game4Padel Richmond",
       "hour": "11:00",
-      "avg_available_courts": 8.17,
+      "avg_available_courts": 8,
       "avg_occupancy_pct": 0.0,
       "observations": 6
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "12:00",
-      "avg_available_courts": 8.5,
-      "avg_occupancy_pct": 0.0,
+      "avg_available_courts": 8.17,
+      "avg_occupancy_pct": 3.3,
       "observations": 6
     },
     {
@@ -309,8 +309,8 @@
     {
       "club": "Game4Padel Richmond",
       "hour": "21:00",
-      "avg_available_courts": 3.2,
-      "avg_occupancy_pct": 36.0,
+      "avg_available_courts": 3,
+      "avg_occupancy_pct": 40.0,
       "observations": 5
     }
   ]
