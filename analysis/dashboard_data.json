@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-04-27T10:24:03.494549Z",
+  "generated_at": "2026-04-27T14:12:56.803693Z",
   "clubs": [
     "Game4Padel Richmond"
   ],
   "overall": {
     "Game4Padel Richmond": {
-      "total_snapshots": 16,
+      "total_snapshots": 17,
       "date_range": {
         "from": "2026-04-18",
-        "to": "2026-05-03"
+        "to": "2026-05-04"
       },
-      "avg_occupancy_pct": 53.7,
+      "avg_occupancy_pct": 50.6,
       "max_occupancy_pct": 92.9,
       "typical_courts": 5
     }
@@ -102,7 +102,7 @@
       "weekday": "Tuesday",
       "iso_week": 18,
       "year": 2026,
-      "occupancy_pct": 7.1
+      "occupancy_pct": 1.4
     },
     {
       "club": "Game4Padel Richmond",
@@ -134,7 +134,7 @@
       "weekday": "Saturday",
       "iso_week": 18,
       "year": 2026,
-      "occupancy_pct": 23.1
+      "occupancy_pct": 29.5
     },
     {
       "club": "Game4Padel Richmond",
@@ -142,7 +142,15 @@
       "weekday": "Sunday",
       "iso_week": 18,
       "year": 2026,
-      "occupancy_pct": 19.2
+      "occupancy_pct": 20.5
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "date": "2026-05-04",
+      "weekday": "Monday",
+      "iso_week": 19,
+      "year": 2026,
+      "occupancy_pct": 0.0
     }
   ],
   "by_weekday": [
@@ -150,14 +158,14 @@
       "club": "Game4Padel Richmond",
       "weekday": "Monday",
       "weekday_index": 0,
-      "avg_occupancy_pct": 90.8,
-      "sample_days": 2
+      "avg_occupancy_pct": 60.5,
+      "sample_days": 3
     },
     {
       "club": "Game4Padel Richmond",
       "weekday": "Tuesday",
       "weekday_index": 1,
-      "avg_occupancy_pct": 42.8,
+      "avg_occupancy_pct": 40.0,
       "sample_days": 2
     },
     {
@@ -185,14 +193,14 @@
       "club": "Game4Padel Richmond",
       "weekday": "Saturday",
       "weekday_index": 5,
-      "avg_occupancy_pct": 66.7,
+      "avg_occupancy_pct": 68.8,
       "sample_days": 3
     },
     {
       "club": "Game4Padel Richmond",
       "weekday": "Sunday",
       "weekday_index": 6,
-      "avg_occupancy_pct": 37.2,
+      "avg_occupancy_pct": 37.6,
       "sample_days": 3
     }
   ],
@@ -218,80 +226,88 @@
       "year": 2026,
       "iso_week": 18,
       "week_label": "2026-W18",
-      "avg_occupancy_pct": 20.5,
+      "avg_occupancy_pct": 20.8,
       "sample_days": 7
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "year": 2026,
+      "iso_week": 19,
+      "week_label": "2026-W19",
+      "avg_occupancy_pct": 0.0,
+      "sample_days": 1
     }
   ],
   "by_hour": [
     {
       "club": "Game4Padel Richmond",
       "hour": "08:00",
-      "avg_available_courts": 6.67,
-      "avg_occupancy_pct": 8.3,
-      "observations": 6
+      "avg_available_courts": 7.29,
+      "avg_occupancy_pct": 7.1,
+      "observations": 7
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "09:00",
-      "avg_available_courts": 6.5,
-      "avg_occupancy_pct": 13.9,
-      "observations": 6
+      "avg_available_courts": 7.29,
+      "avg_occupancy_pct": 11.9,
+      "observations": 7
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "10:00",
-      "avg_available_courts": 7,
-      "avg_occupancy_pct": 10.0,
-      "observations": 5
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "11:00",
-      "avg_available_courts": 6.8,
-      "avg_occupancy_pct": 13.3,
-      "observations": 5
-    },
-    {
-      "club": "Game4Padel Richmond",
-      "hour": "12:00",
-      "avg_available_courts": 7,
-      "avg_occupancy_pct": 19.4,
+      "avg_available_courts": 7.5,
+      "avg_occupancy_pct": 11.1,
       "observations": 6
     },
     {
       "club": "Game4Padel Richmond",
-      "hour": "13:00",
-      "avg_available_courts": 6.86,
-      "avg_occupancy_pct": 4.8,
+      "hour": "11:00",
+      "avg_available_courts": 7.33,
+      "avg_occupancy_pct": 11.1,
+      "observations": 6
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "12:00",
+      "avg_available_courts": 7.43,
+      "avg_occupancy_pct": 16.7,
       "observations": 7
+    },
+    {
+      "club": "Game4Padel Richmond",
+      "hour": "13:00",
+      "avg_available_courts": 7.25,
+      "avg_occupancy_pct": 4.2,
+      "observations": 8
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "14:00",
-      "avg_available_courts": 6,
-      "avg_occupancy_pct": 8.3,
-      "observations": 10
+      "avg_available_courts": 6.27,
+      "avg_occupancy_pct": 9.1,
+      "observations": 11
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "15:00",
-      "avg_available_courts": 5.11,
+      "avg_available_courts": 5.4,
       "avg_occupancy_pct": 17.0,
-      "observations": 9
+      "observations": 10
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "16:00",
-      "avg_available_courts": 4.71,
-      "avg_occupancy_pct": 11.4,
-      "observations": 7
+      "avg_available_courts": 4.5,
+      "avg_occupancy_pct": 12.1,
+      "observations": 8
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "17:00",
-      "avg_available_courts": 4,
-      "avg_occupancy_pct": 20.0,
-      "observations": 4
+      "avg_available_courts": 3.4,
+      "avg_occupancy_pct": 29.3,
+      "observations": 5
     },
     {
       "club": "Game4Padel Richmond",
@@ -303,23 +319,23 @@
     {
       "club": "Game4Padel Richmond",
       "hour": "19:00",
-      "avg_available_courts": 3,
-      "avg_occupancy_pct": 22.2,
-      "observations": 3
+      "avg_available_courts": 2.75,
+      "avg_occupancy_pct": 33.4,
+      "observations": 4
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "20:00",
-      "avg_available_courts": 2.6,
-      "avg_occupancy_pct": 6.7,
-      "observations": 5
+      "avg_available_courts": 2.5,
+      "avg_occupancy_pct": 16.7,
+      "observations": 6
     },
     {
       "club": "Game4Padel Richmond",
       "hour": "21:00",
       "avg_available_courts": 3,
-      "avg_occupancy_pct": 40.0,
-      "observations": 4
+      "avg_occupancy_pct": 42.0,
+      "observations": 5
     }
   ]
 }
