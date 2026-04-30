@@ -1,23 +1,140 @@
 """
-db.py — database layer using Turso (hosted libSQL / SQLite).
+db.py — database layer using Turso's HTTP API.
 
-When TURSO_URL starts with "file:" it uses a local SQLite file — useful for
-testing on your laptop without a Turso account.
+Replaces libsql-client (which has Python 3.13 compatibility issues) with
+plain HTTPS requests to Turso's /v2/pipeline endpoint. No extra dependencies
+beyond `requests`, which we already use for the booking API.
 
-When TURSO_URL is a libsql:// URL it connects to the remote Turso database
-using TURSO_TOKEN for auth — this is what GitHub Actions uses.
+TURSO_URL should be the libsql:// URL from `turso db show --url`.
+The code converts it to https:// automatically.
 """
 
-import libsql_client
+import sqlite3
+import requests
 import config
 
 
-def _client():
-    """Create a fresh sync client. Call .close() when done."""
-    kwargs = {"url": config.TURSO_URL}
-    if config.TURSO_TOKEN:
-        kwargs["auth_token"] = config.TURSO_TOKEN
-    return libsql_client.create_client_sync(**kwargs)
+# ── Connection helpers ────────────────────────────────────────────────────────
+
+def _is_remote() -> bool:
+    return config.TURSO_URL.startswith("libsql://")
+
+
+def _http_url() -> str:
+    """Convert libsql://host to https://host for the HTTP API."""
+    return config.TURSO_URL.replace("libsql://", "https://", 1)
+
+
+def _headers() -> dict:
+    return {"Authorization": f"Bearer {config.TURSO_TOKEN}",
+            "Content-Type": "application/json"}
+
+
+# ── Remote (Turso HTTP API) ───────────────────────────────────────────────────
+
+def _remote_execute(sql: str, params: tuple = ()) -> list[dict]:
+    """Run one statement against Turso and return rows as dicts."""
+    # Turso HTTP API expects named args format; we use positional ? style
+    # and pass args as an ordered list of typed values
+    args = [_turso_value(p) for p in params]
+    payload = {
+        "requests": [
+            {"type": "execute", "stmt": {"sql": sql, "args": args}},
+            {"type": "close"},
+        ]
+    }
+    resp = requests.post(
+        f"{_http_url()}/v2/pipeline",
+        headers=_headers(),
+        json=payload,
+        timeout=15,
+    )
+    resp.raise_for_status()
+    data = resp.json()
+
+    # Check for errors returned in the response body
+    result = data["results"][0]
+    if result["type"] == "error":
+        raise RuntimeError(f"Turso error: {result['error']}")
+
+    rows_data = result["response"]["result"]
+    cols = [c["name"] for c in rows_data["cols"]]
+    return [dict(zip(cols, [v["value"] for v in row])) for row in rows_data["rows"]]
+
+
+def _turso_value(v) -> dict:
+    """Convert a Python value to Turso's typed value format."""
+    if v is None:
+        return {"type": "null"}
+    if isinstance(v, int):
+        return {"type": "integer", "value": str(v)}
+    if isinstance(v, float):
+        return {"type": "float", "value": v}
+    return {"type": "text", "value": str(v)}
+
+
+def _remote_executemany(sql: str, rows: list[tuple]):
+    """Run the same statement for each row, batched into one HTTP request."""
+    if not rows:
+        return
+    requests_payload = []
+    for row in rows:
+        args = [_turso_value(p) for p in row]
+        requests_payload.append({"type": "execute", "stmt": {"sql": sql, "args": args}})
+    requests_payload.append({"type": "close"})
+
+    resp = requests.post(
+        f"{_http_url()}/v2/pipeline",
+        headers=_headers(),
+        json={"requests": requests_payload},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    for result in resp.json()["results"]:
+        if result["type"] == "error":
+            raise RuntimeError(f"Turso error: {result['error']}")
+
+
+# ── Local (plain SQLite, for testing without Turso) ───────────────────────────
+
+def _local_execute(sql: str, params: tuple = ()) -> list[dict]:
+    path = config.TURSO_URL.replace("file:", "")
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    try:
+        cur = conn.execute(sql, params)
+        conn.commit()
+        if cur.description:
+            return [dict(row) for row in cur.fetchall()]
+        return []
+    finally:
+        conn.close()
+
+
+def _local_executemany(sql: str, rows: list[tuple]):
+    path = config.TURSO_URL.replace("file:", "")
+    conn = sqlite3.connect(path)
+    try:
+        for row in rows:
+            conn.execute(sql, row)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+# ── Public API ────────────────────────────────────────────────────────────────
+
+def execute(sql: str, params: tuple = ()) -> list[dict]:
+    if _is_remote():
+        return _remote_execute(sql, params)
+    return _local_execute(sql, params)
+
+
+def executemany(sql: str, rows: list[tuple]):
+    if _is_remote():
+        _remote_executemany(sql, rows)
+    else:
+        _local_executemany(sql, rows)
 
 
 def init_db():
@@ -54,29 +171,9 @@ def init_db():
         "CREATE INDEX IF NOT EXISTS idx_slots_date    ON slots(local_date)",
         "CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(local_date)",
     ]
-    with _client() as c:
-        for sql in statements:
-            c.execute(sql)
+    for sql in statements:
+        execute(sql)
     print(f"[db] initialised — {config.TURSO_URL}")
-
-
-def execute(sql: str, params: tuple = ()) -> list[dict]:
-    """
-    Run any SQL statement.
-    Returns a list of dicts for SELECT, empty list for writes.
-    """
-    with _client() as c:
-        result = c.execute(sql, list(params))
-        if result.columns:
-            return [dict(zip(result.columns, row)) for row in result.rows]
-        return []
-
-
-def executemany(sql: str, rows: list[tuple]):
-    """Run the same SQL for each row in `rows`."""
-    with _client() as c:
-        for row in rows:
-            c.execute(sql, list(row))
 
 
 if __name__ == "__main__":
