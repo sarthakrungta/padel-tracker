@@ -5,7 +5,7 @@ Club configuration — edit these values to match the venue.
 import os
 
 # ── API ───────────────────────────────────────────────────────────────────────
-API_URL = "https://your-booking-api.example.com/availability"  # <-- replace
+API_URL = "https://playtomic.com/api/clubs/availability"
 
 API_PARAMS_BASE = {
     "tenant_id": "b5a636e5-35d0-421b-b823-d857b8c9f088",
