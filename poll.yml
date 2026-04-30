@@ -1,0 +1,46 @@
+name: Padel Poll
+
+on:
+  schedule:
+    # Every 30 minutes, 24/7.
+    # The poll.py script checks whether we're inside the club's operating
+    # hours and does nothing if we're outside them — so running every 30 min
+    # is fine; most runs will be a no-op.
+    - cron: "0,30 * * * *"
+
+  # Allow manual trigger from the Actions tab (useful for testing)
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Force a specific local date (YYYY-MM-DD). Leave blank for auto."
+        required: false
+        default: ""
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run poll
+        env:
+          TURSO_URL:   ${{ secrets.TURSO_URL }}
+          TURSO_TOKEN: ${{ secrets.TURSO_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            python poll.py --date "${{ github.event.inputs.date }}"
+          else
+            python poll.py
+          fi
